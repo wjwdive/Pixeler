@@ -1,0 +1,24 @@
+{
+  "name": "pixeler",
+  "displayName": "Pixeler",
+  "description": "Pixel Art Converter",
+  "version": "1.0.0",
+  "author": { "name": "wjwdive" },
+  "contributions": {
+    "scripts": [
+      { "id": "pixeler_script", "path": "./pixeler.lua" }
+    ],
+    "commands": [
+      {
+        "id": "pixeler_cmd",
+        "title": "Pixeler - 像素转换器",
+        "script": "pixeler_script"
+      }
+    ],
+    "menus": {
+      "edit": [
+        { "command": "pixeler_cmd", "separator": "before" }
+      ]
+    }
+  }
+}
