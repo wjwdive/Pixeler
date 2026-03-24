@@ -18,7 +18,7 @@ Pixeler 是一款专为 Aseprite 打造的高级像素风格转换工具。它�
 ## 安装方法
 
 1. 将 `Pixeler` 文件夹放置到 Aseprite 的脚本目录下（`文件 > 脚本 > 打开脚本文件夹`）。
-2. 或者将文件夹压缩为 `.zip`，改名为 `.aseprite-extension` 后拖入 Aseprite 安装。
+2. 或者将文件夹压缩为 `.zip`，改名为 `.aseprite-extension` 后拖入 Aseprite 安装。（‼️这种方式安装目前有问题，需要重启Aseprite,且无法使用，建议使用加载脚本方式安装）
 3. 重启 Aseprite 或点击 `文件 > 脚本 > 刷新脚本列表`。
 
 ## 使用说明
