@@ -1,9 +1,15 @@
 local Config = {
   pixelSize = 4,
+  samplingMode = "Average",
   colorMode = "1-bit (B&W)",
-  selectedPalette = "Default",
+  selectedPalette = "Default (B&W)",
   ditherMethod = "None",
   autoPreview = true,
+
+  sampling = {
+    AVERAGE = "Average",
+    CENTER = "Center"
+  },
   
   -- Supported Modes
   modes = {
