@@ -2,6 +2,27 @@ local UIManager = {}
 
 function UIManager.init(config, paletteLib, i18n, onPreview, onApply)
   local dlg = Dialog(i18n.title)
+
+  local function getSelectedPaletteOption()
+    if config.selectedPalette == "Default" then
+      return i18n.default
+    end
+    return config.selectedPalette
+  end
+
+  local function normalizeSelectedPalette(value)
+    if value == i18n.default then
+      return "Default"
+    end
+    return value
+  end
+
+  local function getDefaultPaletteSelection(options)
+    if #options > 1 then
+      return options[2]
+    end
+    return i18n.default
+  end
   
   local function getPaletteOptions(mode)
     local options = { i18n.default }
@@ -26,6 +47,20 @@ function UIManager.init(config, paletteLib, i18n, onPreview, onApply)
       if config.autoPreview then onPreview() end
     end
   }
+
+  dlg:combobox{
+    id="samplingMode",
+    label=i18n.sampling_mode,
+    option=config.samplingMode,
+    options={
+      config.sampling.AVERAGE,
+      config.sampling.CENTER
+    },
+    onchange=function()
+      config.samplingMode = dlg.data.samplingMode
+      if config.autoPreview then onPreview() end
+    end
+  }
   
   dlg:separator{ text=i18n.color_control }
   
@@ -46,8 +81,9 @@ function UIManager.init(config, paletteLib, i18n, onPreview, onApply)
     onchange=function()
       config.colorMode = dlg.data.colorMode
       local newPalettes = getPaletteOptions(config.colorMode)
-      config.selectedPalette = "Default"
-      dlg:modify{ id="selectedPalette", options=newPalettes, option=i18n.default }
+      local paletteOption = getDefaultPaletteSelection(newPalettes)
+      config.selectedPalette = normalizeSelectedPalette(paletteOption)
+      dlg:modify{ id="selectedPalette", options=newPalettes, option=paletteOption }
       
       if config.autoPreview then onPreview() end
     end
@@ -56,10 +92,10 @@ function UIManager.init(config, paletteLib, i18n, onPreview, onApply)
   dlg:combobox{
     id="selectedPalette",
     label=i18n.preset_palette,
-    option=config.selectedPalette,
+    option=getSelectedPaletteOption(),
     options=getPaletteOptions(config.colorMode),
     onchange=function()
-      config.selectedPalette = dlg.data.selectedPalette
+      config.selectedPalette = normalizeSelectedPalette(dlg.data.selectedPalette)
       if config.autoPreview then onPreview() end
     end
   }

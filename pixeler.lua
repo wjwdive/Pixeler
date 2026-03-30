@@ -26,6 +26,21 @@ local i18n = dofile(modulesPath .. "i18n.lua")
 
 local isProcessing = false
 
+local function getCustomPaletteColors(colorMode, selectedPalette)
+  if selectedPalette == nil or selectedPalette == "Default" or selectedPalette == i18n.default then
+    return nil
+  end
+  if not paletteLib[colorMode] then
+    return nil
+  end
+  for _, p in ipairs(paletteLib[colorMode]) do
+    if p.name == selectedPalette then
+      return p.colors
+    end
+  end
+  return nil
+end
+
 local function runConversion(spr, isPreview)
   if not spr or isProcessing then return end
   isProcessing = true
@@ -55,16 +70,11 @@ local function runConversion(spr, isPreview)
       local rgba = app.pixelColor.rgba
       
       local currentPalette = (config.colorMode == config.modes.CURRENT_PALETTE) and spr.palettes[1] or nil
-      local customPaletteColors = nil
-      if config.selectedPalette ~= "Default" and paletteLib[config.colorMode] then
-        for _, p in ipairs(paletteLib[config.colorMode]) do
-          if p.name == config.selectedPalette then customPaletteColors = p.colors break end
-        end
-      end
+      local customPaletteColors = getCustomPaletteColors(config.colorMode, config.selectedPalette)
 
       for y = 0, newHeight - 1 do
         for x = 0, newWidth - 1 do
-          local r, g, b, a = getDownsampledColor(img, x * pixelSize, y * pixelSize, pixelSize)
+          local r, g, b, a = getDownsampledColor(img, x * pixelSize, y * pixelSize, pixelSize, config.samplingMode)
           
           if config.ditherMethod ~= config.dithering.NONE then
             if config.ditherMethod == config.dithering.FLOYD then
@@ -123,16 +133,11 @@ local function runConversion(spr, isPreview)
     local rgba = app.pixelColor.rgba
 
     local currentPalette = (config.colorMode == config.modes.CURRENT_PALETTE) and spr.palettes[1] or nil
-    local customPaletteColors = nil
-    if config.selectedPalette ~= "Default" and paletteLib[config.colorMode] then
-      for _, p in ipairs(paletteLib[config.colorMode]) do
-        if p.name == config.selectedPalette then customPaletteColors = p.colors break end
-      end
-    end
+    local customPaletteColors = getCustomPaletteColors(config.colorMode, config.selectedPalette)
 
     for y = 0, height - 1, pixelSize do
       for x = 0, width - 1, pixelSize do
-        local r, g, b, na = getDownsampledColor(img, x, y, pixelSize)
+        local r, g, b, na = getDownsampledColor(img, x, y, pixelSize, config.samplingMode)
         if config.ditherMethod ~= config.dithering.NONE then
           if config.ditherMethod == config.dithering.FLOYD then
             local idx = getErrorIdx(x, y)
